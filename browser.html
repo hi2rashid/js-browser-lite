@@ -4,52 +4,66 @@
     <title>Embedded Iframe with Navbar</title>
     <style>
         body {
-            margin: 0; /* Remove default body margin */
+            margin: 0;
             font-family: sans-serif;
         }
 
-        .navbar {
-            background-color: #f0f0f0; /* Light gray background */
+      .navbar {
+            background-color: #f0f0f0;
             padding: 5px;
             display: flex;
-            align-items: center; /* Vertically align items */
-            position: fixed; /* Fixed navbar */
+            align-items: center;
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            z-index: 100; /* Ensure it's above the iframe */
+            z-index: 100;
         }
 
-        .navbar-buttons {
-            display: flex; /* Arrange buttons horizontally */
+      .navbar-buttons {
+            display: flex;
         }
-        .navbar-buttons button {
+
+      .navbar-buttons button {
             padding: 5px 10px;
             margin: 0 5px;
             border: none;
             cursor: pointer;
         }
 
-        .navbar-address {
-            flex-grow: 1; /* Address bar takes up available space */
-            margin: 0 10px; /* Add some margin */
+      .navbar-address {
+            flex-grow: 1;
+            margin: 0 10px;
         }
 
-        .navbar-address input[type="text"] {
+      .navbar-address input[type="text"] {
             width: 100%;
             padding: 5px;
             border: 1px solid #ccc;
         }
 
-        .navbar-dropdown {
+      .navbar-open-new-tab {
+          margin-left: 5px; /* Adjust spacing as needed */
+          cursor: pointer;
+          display: flex; /* Use flexbox for centering */
+          align-items: center; /* Vertically center the icon */
+        }
+
+      .navbar-open-new-tab img {
+          width: 16px; /* Adjust icon size */
+          height: 16px;
+        }
+
+
+      .navbar-dropdown {
             margin-left: 10px;
         }
 
         iframe {
             width: 100%;
-            height: calc(100vh - 40px); /* Iframe takes up remaining viewport height */
+            height: calc(100vh - 40px);
             border: none;
-            margin-top: 40px; /* Adjust margin to account for navbar height */
+            margin-top: 40px;
         }
     </style>
 </head>
@@ -59,15 +73,20 @@
     <div class="navbar-buttons">
         <button onclick="goBack()">Back</button>
         <button onclick="goForward()">Forward</button>
+        <button onclick="refreshIframe()">Refresh</button>
     </div>
     <div class="navbar-address">
         <input type="text" id="addressBar" value="https://www.example.com">
     </div>
+        <div class="navbar-open-new-tab" onclick="openInNewTab()">
+        <i alt="Open in new tab">NT</i>
+        </div>
+
     <div class="navbar-dropdown">
         <select>
             <option value="https://www.example.com">Example.com</option>
             <option value="https://www.google.com">Google.com</option>
-            </select>
+        </select>
     </div>
 </div>
 
@@ -78,13 +97,13 @@
     const myIframe = document.getElementById('myIframe');
     const dropdown = document.querySelector('.navbar-dropdown select');
 
-    addressBar.addEventListener('keyup', function(event) {
+    addressBar.addEventListener('keyup', function (event) {
         if (event.key === 'Enter') {
             loadURL();
         }
     });
 
-    dropdown.addEventListener('change', function() {
+    dropdown.addEventListener('change', function () {
         addressBar.value = this.value;
         loadURL();
     });
@@ -102,10 +121,30 @@
         myIframe.contentWindow.history.forward();
     }
 
+    function refreshIframe() {
+        myIframe.contentWindow.location.reload();
+    }
 
-    myIframe.onload = function() {
+    function openInNewTab() {
+        const url = addressBar.value;
+        window.open(url, '_blank'); // Open in a new tab
+    }
+
+
+    myIframe.onload = function () {
         addressBar.value = myIframe.contentWindow.location.href;
     };
+
+
+    // Alt + Tab handling (cross-browser compatible)
+    document.addEventListener('keydown', function(e) {
+      if (e.altKey && e.key === 'Tab') {  // Alt+Tab pressed
+        e.preventDefault(); // Prevent default tab switching
+        // Here you would implement your tab switching logic
+        // For example, you could cycle through iframes or other elements
+        alert("Alt+Tab pressed (Implement your tab switching logic here)");
+      }
+    });
 
 </script>
 
